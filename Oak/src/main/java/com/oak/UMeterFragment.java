@@ -112,7 +112,7 @@ public class UMeterFragment extends BaseFragment {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 mLastVoteTime = System.currentTimeMillis();
-                mVotedAgoTextView.setText("Last vote: now");
+                mVotedAgoTextView.setText(getString(R.string.last_vote) + " " + getString(R.string.now));
             }
 
             @Override
@@ -190,9 +190,9 @@ public class UMeterFragment extends BaseFragment {
                 mChartView.invalidate();
 
                 if (mLastVoteTime == -1) {
-                    mVotedAgoTextView.setText("Last vote: never");
+                    mVotedAgoTextView.setText(getString(R.string.last_vote) + " " + getString(R.string.never));
                 } else {
-                    mVotedAgoTextView.setText("Last vote: " + TimeUtils.getTimeAgo(mLastVoteTime));
+                    mVotedAgoTextView.setText(getString(R.string.last_vote) + " " + TimeUtils.getTimeAgo(mLastVoteTime));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
