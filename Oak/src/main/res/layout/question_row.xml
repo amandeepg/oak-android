@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/questionText"
             android:textColor="#525252"
-            android:textSize="15dp">
+            android:textSize="15sp">
         </TextView>
 
         <TextView
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/pointsText"
             android:textColor="#525252"
-            android:textSize="10dp">
+            android:textSize="12sp">
         </TextView>
 
     </LinearLayout>
