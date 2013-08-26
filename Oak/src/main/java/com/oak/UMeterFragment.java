@@ -40,20 +40,18 @@ public class UMeterFragment extends BaseFragment {
     private long mLastVoteTime;
     private SeekBar mVoteBar;
 
-    public UMeterFragment() {
-        super();
-        mCurrGraphPosX = 20;
-        mLastVoteTime = -1;
-        mSeries = new LinearSeries();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         if (savedInstanceState != null) {
             mCurrGraphPosX = savedInstanceState.getInt("mCurrGraphPosX");
+            mLastVoteTime = savedInstanceState.getLong("mLastVoteTime");
             mSeries = savedInstanceState.getParcelable("mSeries");
+        } else {
+            mCurrGraphPosX = 20;
+            mLastVoteTime = -1;
+            mSeries = new LinearSeries();
         }
 
         final View v = inflater.inflate(R.layout.umeter, container, false);
@@ -82,6 +80,7 @@ public class UMeterFragment extends BaseFragment {
      public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("mCurrGraphPosX", mCurrGraphPosX);
+        outState.putLong("mLastVoteTime", mLastVoteTime);
         outState.putParcelable("mSeries", mSeries);
     }
 
