@@ -39,6 +39,7 @@ public class UMeterFragment extends BaseFragment {
     private int mWaitingChanges;
     private long mLastVoteTime;
     private SeekBar mVoteBar;
+    private Runnable mLoadRunnable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,6 +84,12 @@ public class UMeterFragment extends BaseFragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        mHandler.removeCallbacks(mLoadRunnable);
+    }
+
+    @Override
      public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("mCurrGraphPosX", mCurrGraphPosX);
@@ -112,12 +119,13 @@ public class UMeterFragment extends BaseFragment {
     }
 
     private void postLoadDelayed(final long delayMillis) {
-        mHandler.postDelayed(new Runnable() {
+        mLoadRunnable = new Runnable() {
             @Override
             public void run() {
                 createLoadRequest();
             }
-        }, delayMillis);
+        };
+        mHandler.postDelayed(mLoadRunnable, delayMillis);
     }
 
     private void setVoteBarListener() {

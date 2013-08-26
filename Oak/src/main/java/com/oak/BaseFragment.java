@@ -40,7 +40,7 @@ public class BaseFragment extends Fragment implements PullToRefreshAttacher.OnRe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        mQueue = AppController.getInstance().getRequestQueue();
         mHandler = new Handler();
     }
 
@@ -55,21 +55,18 @@ public class BaseFragment extends Fragment implements PullToRefreshAttacher.OnRe
     public void onStart() {
         super.onStart();
         //mBus.register(this);
-        mQueue.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         //mBus.unregister(this);
-        mQueue.cancelAll(this);
-        mQueue.stop();
+        AppController.getInstance().cancelPendingRequests(this);
     }
 
     protected void addRequest(Request request) {
         request.setShouldCache(false);
-        request.setTag(this);
-        mQueue.add(request);
+        AppController.getInstance().addToRequestQueue(request, TAG);
     }
 
     protected void setRefreshing(boolean refreshing) {

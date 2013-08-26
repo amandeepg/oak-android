@@ -76,6 +76,11 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
         createLoadRequest();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        mHandler.removeCallbacks(mLoadRunnable);
+    }
 
     private void setUpListView() {
         ListView lv = (ListView) mView.findViewById(R.id.questionListView);
