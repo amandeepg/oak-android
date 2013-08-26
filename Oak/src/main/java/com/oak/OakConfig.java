@@ -5,7 +5,6 @@
 package com.oak;
 
 import android.text.format.DateUtils;
-import android.text.format.Time;
 
 public class OakConfig {
 

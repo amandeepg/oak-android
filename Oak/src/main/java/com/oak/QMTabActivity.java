@@ -4,11 +4,8 @@
 
 package com.oak;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.google.analytics.tracking.android.EasyTracker;
 import com.oak.utils.TabSwipeActivity;
 
 public class QMTabActivity extends TabSwipeActivity {
