@@ -3,6 +3,7 @@ package com.michaelpardo.android.widget.chartview;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Parcel;
 
 public class LinearSeries extends AbstractSeries {
     private PointF mLastPoint;

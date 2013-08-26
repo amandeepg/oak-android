@@ -49,6 +49,13 @@ public class UMeterFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mCurrGraphPosX = savedInstanceState.getInt("mCurrGraphPosX");
+            mSeries = savedInstanceState.getParcelable("mSeries");
+        }
+
         final View v = inflater.inflate(R.layout.umeter, container, false);
 
         // Find the chart view
@@ -71,6 +78,13 @@ public class UMeterFragment extends BaseFragment {
         return v;
     }
 
+    @Override
+     public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("mCurrGraphPosX", mCurrGraphPosX);
+        outState.putParcelable("mSeries", mSeries);
+    }
+
     private void createLoadRequest() {
         JsonObjectRequest loadRequest = new JsonObjectRequest(
                 Request.Method.GET,
@@ -89,8 +103,7 @@ public class UMeterFragment extends BaseFragment {
                 null
         );
 
-        loadRequest.setShouldCache(false);
-        mQueue.add(loadRequest);
+        addRequest(loadRequest);
     }
 
     private void postLoadDelayed(final long delayMillis) {
@@ -151,8 +164,7 @@ public class UMeterFragment extends BaseFragment {
                                 }
                             }
                     );
-                    req.setShouldCache(false);
-                    mQueue.add(req);
+                    addRequest(req);
                 }
             }
         }, OakConfig.NETWORK_POST_BUFFER_MILLIS);

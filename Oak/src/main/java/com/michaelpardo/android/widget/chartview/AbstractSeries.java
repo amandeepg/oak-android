@@ -3,12 +3,14 @@ package com.michaelpardo.android.widget.chartview;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractSeries {
+public abstract class AbstractSeries implements Parcelable {
     //////////////////////////////////////////////////////////////////////////////////////
     // PRIVATE MEMBERS
     //////////////////////////////////////////////////////////////////////////////////////
@@ -34,6 +36,20 @@ public abstract class AbstractSeries {
 
     public AbstractSeries() {
         mPaint.setAntiAlias(true);
+    }
+
+    private AbstractSeries(Parcel in) {
+        this();
+
+        in.readList(mPoints, null);
+
+        mMinX = in.readDouble();
+        mMaxX = in.readDouble();
+        mMinY = in.readDouble();
+        mMaxY = in.readDouble();
+
+        mRangeX = in.readDouble();
+        mRangeY = in.readDouble();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -178,15 +194,38 @@ public abstract class AbstractSeries {
     protected void onDrawingComplete() {
     }
 
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeList(mPoints);
+
+        out.writeDouble(mMinX);
+        out.writeDouble(mMaxX);
+        out.writeDouble(mMinY);
+        out.writeDouble(mMaxY);
+
+        out.writeDouble(mRangeX);
+        out.writeDouble(mRangeY);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC CLASSES
     //////////////////////////////////////////////////////////////////////////////////////
 
-    public static abstract class AbstractPoint implements Comparable<AbstractPoint> {
+    public static abstract class AbstractPoint implements Comparable<AbstractPoint>,
+            Parcelable {
         private double mX;
         private double mY;
 
         public AbstractPoint() {
+        }
+
+        private AbstractPoint(Parcel in) {
+            this();
+            mX = in.readDouble();
+            mY = in.readDouble();
         }
 
         public AbstractPoint(double x, double y) {
@@ -210,6 +249,15 @@ public abstract class AbstractSeries {
         @Override
         public int compareTo(AbstractPoint another) {
             return Double.compare(mX, another.mX);
+        }
+
+        public int describeContents() {
+            return 0;
+        }
+
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeDouble(mX);
+            out.writeDouble(mY);
         }
     }
 }

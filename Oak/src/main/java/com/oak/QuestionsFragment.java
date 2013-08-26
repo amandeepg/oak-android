@@ -57,6 +57,7 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         mView = inflater.inflate(R.layout.questions_fragment, container, false);
         setUpListView();
         createLoadRequest();
@@ -117,8 +118,7 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
                 }
         );
 
-        loadRequest.setShouldCache(false);
-        mQueue.add(loadRequest);
+        addRequest(loadRequest);
     }
 
     private void postLoadDelayed(final long delayMillis) {
@@ -178,8 +178,7 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
                     }
                 }
         );
-        req.setShouldCache(false);
-        mQueue.add(req);
+        addRequest(req);
     }
 
     private void onQuestionSubmitted(JSONObject json) {
@@ -245,7 +244,7 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
             @Override
             public void run() {
                 if (NetworkUtils.shouldFireNow(mResolveSemaphores, id)) {
-                    mQueue.add(req);
+                    addRequest(req);
                 }
             }
         }, OakConfig.NETWORK_POST_BUFFER_MILLIS);
@@ -293,7 +292,7 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
             @Override
             public void run() {
                 if (NetworkUtils.shouldFireNow(mVoteSemaphores, id)) {
-                    mQueue.add(req);
+                    addRequest(req);
                 }
             }
         }, OakConfig.NETWORK_POST_BUFFER_MILLIS);

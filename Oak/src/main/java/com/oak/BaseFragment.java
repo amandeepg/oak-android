@@ -8,12 +8,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import de.greenrobot.event.EventBus;
@@ -38,7 +42,13 @@ public class BaseFragment extends Fragment implements PullToRefreshAttacher.OnRe
         super.onCreate(savedInstanceState);
         mQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         mHandler = new Handler();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         mPullToRefreshAttacher = ((BaseActivity) getActivity()).getPullToRefreshAttacher();
+        return null;
     }
 
     @Override
@@ -54,6 +64,12 @@ public class BaseFragment extends Fragment implements PullToRefreshAttacher.OnRe
         //mBus.unregister(this);
         mQueue.cancelAll(this);
         mQueue.stop();
+    }
+
+    protected void addRequest(Request request) {
+        request.setShouldCache(false);
+        request.setTag(this);
+        mQueue.add(request);
     }
 
     protected void setRefreshing(boolean refreshing) {
