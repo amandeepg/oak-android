@@ -23,8 +23,8 @@ import com.michaelpardo.android.widget.chartview.LinearSeries;
 import com.oak.R.id;
 import com.oak.utils.AppMsgFactory;
 import com.oak.utils.NetworkUtils;
-import com.oak.utils.OakPostParams;
 import com.oak.utils.OakGetRequestFactory;
+import com.oak.utils.OakPostParams;
 import com.oak.utils.TimeUtils;
 
 import org.json.JSONException;

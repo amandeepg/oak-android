@@ -34,8 +34,8 @@ import com.oak.db.CoursesContract;
 import com.oak.db.OakContentProvider;
 import com.oak.utils.AppMsgFactory;
 import com.oak.utils.NetworkUtils;
-import com.oak.utils.OakPostParams;
 import com.oak.utils.OakGetRequestFactory;
+import com.oak.utils.OakPostParams;
 import com.oak.utils.UiUtils;
 
 import org.json.JSONObject;

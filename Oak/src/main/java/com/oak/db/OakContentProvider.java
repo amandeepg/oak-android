@@ -4,9 +4,6 @@
 
 package com.oak.db;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -16,6 +13,9 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class OakContentProvider extends ContentProvider {
 
