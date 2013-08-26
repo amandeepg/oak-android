@@ -71,6 +71,8 @@ public class UMeterFragment extends BaseFragment {
 
         mVoteBar.setProgress(50);
 
+        setTimeAgoText();
+
         createLoadRequest();
 
         return v;
@@ -124,7 +126,7 @@ public class UMeterFragment extends BaseFragment {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 mLastVoteTime = System.currentTimeMillis();
-                mVotedAgoTextView.setText(getString(R.string.last_vote) + " " + getString(R.string.now));
+                setTimeAgoText();
             }
 
             @Override
@@ -200,15 +202,24 @@ public class UMeterFragment extends BaseFragment {
                 mCurrGraphPosX++;
                 mChartView.invalidate();
 
-                if (mLastVoteTime == -1) {
-                    mVotedAgoTextView.setText(getString(R.string.last_vote) + " " + getString(R.string.never));
-                } else {
-                    mVotedAgoTextView.setText(getString(R.string.last_vote) + " " + TimeUtils.getTimeAgo(mLastVoteTime));
-                }
+                setTimeAgoText();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         postLoadDelayed(OakConfig.AUTO_REFRESH_UNDERSTANDING_MILLIS);
+    }
+
+    private void setTimeAgoText() {
+        String timeAgo;
+        if (mLastVoteTime == -1) {
+            timeAgo = getString(R.string.never);
+        } else if (System.currentTimeMillis() - mLastVoteTime < 1000) {
+            timeAgo = getString(R.string.now);
+        } else {
+            timeAgo = TimeUtils.getTimeAgo(mLastVoteTime);
+        }
+
+        mVotedAgoTextView.setText(getString(R.string.last_vote) + " " + timeAgo);
     }
 }
