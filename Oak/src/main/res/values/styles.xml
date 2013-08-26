@@ -1,0 +1,15 @@
+<resources>
+
+    <!-- Empty parent idiom -->
+    <style name="NoParent" />
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+    </style>
+
+    <!-- Root styles that vary by API level -->
+    <style name="AppTheme.Theme" parent="AppTheme.Base">
+        <!-- API 11+ (compatibility) -->
+        <item name="indeterminateProgressStyle">@style/Compat.IndeterminateProgress</item>
+    </style>
+
+</resources>
