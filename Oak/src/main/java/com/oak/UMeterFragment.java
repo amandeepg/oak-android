@@ -41,6 +41,10 @@ public class UMeterFragment extends BaseFragment {
     private SeekBar mVoteBar;
     private Runnable mLoadRunnable;
 
+    public UMeterFragment() {
+        super();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
