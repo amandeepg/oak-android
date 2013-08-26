@@ -56,6 +56,7 @@ public class CoursesFragment extends BaseFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         mView = inflater.inflate(R.layout.courses, container, false);
         setUpListView();
         createLoadRequest();
@@ -121,9 +122,7 @@ public class CoursesFragment extends BaseFragment implements
                     }
                 }
         );
-
-        loadRequest.setShouldCache(false);
-        mQueue.add(loadRequest);
+        addRequest(loadRequest);
     }
 
     private void onCoursesLoaded(JSONObject json) {
@@ -224,7 +223,7 @@ public class CoursesFragment extends BaseFragment implements
                     }
                 }
         );
-        mQueue.add(req);
+        addRequest(req);
     }
 
     private void addCourse(View dialogView) {
@@ -262,9 +261,7 @@ public class CoursesFragment extends BaseFragment implements
                     }
                 }
         );
-
-        req.setShouldCache(false);
-        mQueue.add(req);
+        addRequest(req);
     }
 
     @Override
