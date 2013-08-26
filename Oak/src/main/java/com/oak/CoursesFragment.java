@@ -47,6 +47,10 @@ public class CoursesFragment extends BaseFragment implements
     private View mView;
     private Runnable mLoadRunnable;
 
+    public CoursesFragment() {
+        super();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

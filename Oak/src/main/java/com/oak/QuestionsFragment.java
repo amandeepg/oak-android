@@ -48,6 +48,10 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
     private static HashMap<String, Semaphore> mResolveSemaphores = new HashMap<String, Semaphore>();
     private static HashMap<String, Semaphore> mVoteSemaphores = new HashMap<String, Semaphore>();
 
+    public QuestionsFragment(){
+        super();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
