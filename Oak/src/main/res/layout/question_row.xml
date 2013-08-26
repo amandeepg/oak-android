@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    android:background="#dfdfdf">
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="25dp"
+                  android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@drawable/tri"
+            android:id="@+id/upButton"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@drawable/tri_sel"
+            android:id="@+id/upButtonSel"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/votesText"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:textColor="#525252">
+        </TextView>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:id="@+id/downButton"
+            android:background="@drawable/tri_down"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:id="@+id/downButtonSel"
+            android:background="@drawable/tri_sel_down"/>
+    </LinearLayout>
+
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center_vertical"
+                  android:layout_weight="1"
+                  android:paddingLeft="10dp"
+                  android:paddingTop="5dp"
+                  android:paddingBottom="5dp">
+        <TextView
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/questionText"
+            android:textColor="#525252"
+            android:textSize="15dp">
+        </TextView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pointsText"
+            android:textColor="#525252"
+            android:textSize="10dp">
+        </TextView>
+
+    </LinearLayout>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/resolvedCheckBox">
+    </CheckBox>
+
+
+</LinearLayout>
+

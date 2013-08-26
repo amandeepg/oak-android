@@ -1,0 +1,9 @@
+<resources>
+
+    <!-- Root styles that vary by API level -->
+    <style name="AppTheme.Theme" parent="Theme.AppCompat.Light">
+        <!-- API 11+ (compatibility) -->
+        <item name="indeterminateProgressStyle">?android:indeterminateProgressStyle</item>
+    </style>
+
+</resources>

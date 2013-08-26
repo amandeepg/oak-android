@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Oak</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="join">Join</string>
+    <string name="empty_course_code">Empty course code</string>
+    <string name="empty_course_password">Empty course password</string>
+    <string name="no_courses_yet">No courses yet</string>
+    <string name="available_courses_title">Available Courses</string>
+    <string name="previously_joined_courses_title">Previously Joined Courses</string>
+    <string name="something_went_wrong">Something went wrong!</string>
+    <string name="joining_course">Joining course …</string>
+    <string name="wrong_password">Wrong password!</string>
+    <string name="course_joined">Course joined</string>
+    <string name="adding_course">Adding course …</string>
+    <string name="course_added">Course added</string>
+    <string name="new_question_hint">New question …</string>
+    <string name="submit">Submit</string>
+    <string name="no_questions_yet">No questions yet</string>
+    <string name="top_question">Top Question</string>
+    <string name="rising_questions">Rising Questions</string>
+    <string name="umeter_title">UMeter</string>
+    <string name="questions_title">Questions</string>
+    <string name="adding_question">Adding question …</string>
+    <string name="question_added">Question Added</string>
+</resources>

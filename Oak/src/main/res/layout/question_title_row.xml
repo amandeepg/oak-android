@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+<TextView style="?android:attr/listSeparatorTextViewStyle"
+          android:id="@+id/title"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:gravity="center_vertical|start"
+          android:text="one"
+    />
+
+<TextView style="?android:attr/listSeparatorTextViewStyle"
+          android:id="@+id/resolved_title"
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:gravity="center_vertical|end"
+          android:text="Resolved?"
+          android:paddingRight="8dp"
+    />
+
+</LinearLayout>
