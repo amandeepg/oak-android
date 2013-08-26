@@ -60,7 +60,6 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
         super.onCreateView(inflater, container, savedInstanceState);
         mView = inflater.inflate(R.layout.questions_fragment, container, false);
         setUpListView();
-        createLoadRequest();
         mView.findViewById(R.id.submit_question).setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -69,6 +68,12 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
             }
         });
         return mView;
+    }
+
+    @Override
+     public void onStart() {
+        super.onStart();
+        createLoadRequest();
     }
 
 
