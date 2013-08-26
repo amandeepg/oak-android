@@ -81,6 +81,12 @@ public class CoursesFragment extends BaseFragment implements
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        mHandler.removeCallbacks(mLoadRunnable);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflator) {
         inflator.inflate(R.menu.courses_menu, menu);
         super.onCreateOptionsMenu(menu, inflator);
