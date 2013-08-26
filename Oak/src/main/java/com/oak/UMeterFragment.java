@@ -73,9 +73,13 @@ public class UMeterFragment extends BaseFragment {
 
         setTimeAgoText();
 
-        createLoadRequest();
-
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        createLoadRequest();
     }
 
     @Override

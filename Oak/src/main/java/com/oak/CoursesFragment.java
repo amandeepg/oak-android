@@ -59,7 +59,6 @@ public class CoursesFragment extends BaseFragment implements
         super.onCreateView(inflater, container, savedInstanceState);
         mView = inflater.inflate(R.layout.courses, container, false);
         setUpListView();
-        createLoadRequest();
         return mView;
     }
 
@@ -73,6 +72,12 @@ public class CoursesFragment extends BaseFragment implements
         mAdapter = new CoursesAdapter(mView.getContext(), null, 0);
 
         lv.setAdapter(mAdapter);
+    }
+
+    @Override
+     public void onStart() {
+        super.onStart();
+        createLoadRequest();
     }
 
     @Override
