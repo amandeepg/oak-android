@@ -73,6 +73,7 @@ public class UMeterFragment extends BaseFragment {
         mVoteBar.setProgress(50);
 
         setTimeAgoText();
+        setVoteBarListener();
 
         return v;
     }
@@ -183,16 +184,13 @@ public class UMeterFragment extends BaseFragment {
         }, OakConfig.NETWORK_POST_BUFFER_MILLIS);
     }
 
-
-    private boolean set_vote = false;
-
     public void onUnderstandingLoaded(JSONObject json) {
         NetworkUtils.printResponse(TAG, "understanding", json);
 
         if (json != null) {
             try {
                 int understanding = json.getInt("understanding");
-                if (!set_vote) {
+                if (mLastVoteTime == -1) {
 
                     try {
                         mVoteBar.setProgress(json.getInt("deviceVote"));
@@ -204,8 +202,6 @@ public class UMeterFragment extends BaseFragment {
                     } catch (JSONException e) {
                         mLastVoteTime = -1;
                     }
-                    setVoteBarListener();
-                    set_vote = true;
                 }
 
                 mSeries.addPoint(new LinearSeries.LinearPoint(mCurrGraphPosX, understanding + (int) (Math.random() * 1)));
