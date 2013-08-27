@@ -214,8 +214,8 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
         return new CursorLoader(getActivity(),
                 OakContentProvider.QUESTION_CONTENT_URI,
                 QuestionsContract.FULL_PROJECTION,
-                null,
-                null,
+                "(" + QuestionsContract.COLUMN_COURSE_NAME + "=?)",
+                new String[] { QMTabActivity.courseCode },
                 QuestionsContract.DEFAULT_SORT);
     }
 
