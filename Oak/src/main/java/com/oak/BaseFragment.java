@@ -59,7 +59,7 @@ public class BaseFragment extends Fragment implements PullToRefreshAttacher.OnRe
     public void onStop() {
         super.onStop();
         //mBus.unregister(this);
-        AppController.getInstance().cancelPendingRequests(this);
+        AppController.getInstance().cancelPendingRequests(TAG);
     }
 
     protected void addRequest(Request request) {
