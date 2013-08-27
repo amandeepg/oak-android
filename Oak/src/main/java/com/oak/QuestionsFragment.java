@@ -26,14 +26,10 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.oak.db.OakContentProvider;
 import com.oak.db.QuestionsContract;
 import com.oak.utils.AppMsgFactory;
 import com.oak.utils.NetworkUtils;
-import com.oak.utils.OakGetRequestFactory;
-import com.oak.utils.OakPostParams;
-import com.oak.volley.JsonPostRequest;
 
 import org.json.JSONObject;
 
@@ -110,30 +106,29 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
             postLoadDelayed(OakConfig.AUTO_REFRESH_QUESTIONS_MILLIS);
             return;
         }
-        JsonObjectRequest loadRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                new OakGetRequestFactory("QuestionList")
-                        .add("courseCode", QMTabActivity.courseCode)
-                        .add("coursePassword", QMTabActivity.coursePass)
-                        .addDeviceID(getActivity())
-                        .url(),
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject json) {
-                        onQuestionsLoaded(json);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        setRefreshComplete();
-                        AppMsgFactory.somethingWentWrong(getActivity());
-                    }
-                }
-        );
 
+        Response.Listener<JSONObject> responseListener = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                onQuestionsLoaded(response);
+            }
+        };
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                setRefreshComplete();
+            }
+        };
+        Request loadRequest = OakApi.getQuestions(
+                getActivity(), responseListener, errorListener, getCourseDataBundle());
         addRequest(loadRequest);
+    }
+
+    private Bundle getCourseDataBundle() {
+        Bundle data = new Bundle();
+        data.putString(OakApi.COURSE_CODE, QMTabActivity.courseCode);
+        data.putString(OakApi.COURSE_PASSWORD, QMTabActivity.coursePass);
+        return data;
     }
 
     private void postLoadDelayed(final long delayMillis) {
@@ -156,7 +151,6 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
 
         if (!NetworkUtils.areRequestsPending(mResolveSemaphores) &&
                 !NetworkUtils.areRequestsPending(mVoteSemaphores)) {
-            NetworkUtils.printResponse(TAG, "onQuestionsLoaded", json);
             QuestionsContract.insert(Question.parseJson(json, QMTabActivity.courseCode), getActivity().getContentResolver());
         }
         postLoadDelayed(OakConfig.AUTO_REFRESH_QUESTIONS_MILLIS);
@@ -169,38 +163,28 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
             return;
         }
 
-
         AppMsgFactory.startMsg(this, R.string.adding_question);
         questionsTextView.clearComposingText();
         questionsTextView.setText("");
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(questionsTextView.getWindowToken(), 0);
 
-        final JsonPostRequest req = new JsonPostRequest(
-                OakConfig.endPoint("AddQuestion"),
-                new OakPostParams()
-                        .add("courseCode", QMTabActivity.courseCode)
-                        .add("coursePassword", QMTabActivity.coursePass)
-                        .add("question", questionText)
-                        .addDeviceID(getActivity()),
+        Bundle data = getCourseDataBundle();
+        data.putString(OakApi.QUESTION, questionText);
+        Request req = OakApi.postQuestion(getActivity(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        onQuestionSubmitted(response);
+                        onQuestionAdded(response);
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        AppMsgFactory.somethingWentWrong(getActivity());
-                    }
-                }
+                null,
+                data
         );
         addRequest(req);
     }
 
-    private void onQuestionSubmitted(JSONObject json) {
-        NetworkUtils.printResponse(TAG, "addQuestion", json);
+    private void onQuestionAdded(JSONObject json) {
         if (json != null) {
             AppMsgFactory.finishMsg(this, R.string.question_added);
             createLoadRequest();
@@ -241,23 +225,19 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
                 values, "(" + QuestionsContract.COLUMN_ID + "=" + "?)", new String [] { id });
 
         NetworkUtils.incrementFire(mResolveSemaphores, id);
-        final JsonPostRequest req = new JsonPostRequest(
-                OakConfig.endPoint("ResolveQuestion"),
-                new OakPostParams()
-                        .add("courseCode", QMTabActivity.courseCode)
-                        .add("coursePassword", QMTabActivity.coursePass)
-                        .add("resolveVote", isResolved ? "1" : "0")
-                        .add("questionId", id)
-                        .addDeviceID(getActivity()),
+        Bundle data = getCourseDataBundle();
+        data.putString(OakApi.RESOLVE_VOTE, isResolved ? "1" : "0");
+        data.putString(OakApi.QUESTION_ID, id);
+        final Request req = OakApi.postResolve(getActivity(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        NetworkUtils.printResponse(TAG, "resolved", response);
                         NetworkUtils.decrementFire(mResolveSemaphores, id);
                         createLoadRequest();
                     }
                 },
-                null
+                null,
+                data
         );
         req.setShouldCache(false);
 
@@ -289,23 +269,19 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
                 values, "(" + QuestionsContract.COLUMN_ID + "=" + "?)", new String[]{id});
 
         NetworkUtils.incrementFire(mVoteSemaphores, id);
-        final JsonPostRequest req = new JsonPostRequest(
-                OakConfig.endPoint("VoteQuestion"),
-                new OakPostParams()
-                        .add("courseCode", QMTabActivity.courseCode)
-                        .add("coursePassword", QMTabActivity.coursePass)
-                        .add("vote", vote)
-                        .add("questionId", id)
-                        .addDeviceID(getActivity()),
+        Bundle data = getCourseDataBundle();
+        data.putString(OakApi.VOTE, vote);
+        data.putString(OakApi.QUESTION_ID, id);
+        final Request req = OakApi.postQuestionVote(getActivity(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        NetworkUtils.printResponse(TAG, "votedQuestion", response);
                         NetworkUtils.decrementFire(mVoteSemaphores, id);
                         createLoadRequest();
                     }
                 },
-                null
+                null,
+                data
         );
         req.setShouldCache(false);
 
