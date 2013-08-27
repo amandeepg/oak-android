@@ -292,6 +292,10 @@ public class CoursesFragment extends BaseFragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (cursor.getCount() > 0) {
+            mView.findViewById(R.id.progress).setVisibility(View.GONE);
+            mView.findViewById(R.id.emptyText).setVisibility(View.VISIBLE);
+        }
         mAdapter.swapCursor(cursor);
     }
 

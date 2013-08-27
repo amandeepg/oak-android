@@ -151,6 +151,9 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
 
     private void onQuestionsLoaded(JSONObject json) {
         setRefreshComplete();
+        mView.findViewById(R.id.progress).setVisibility(View.GONE);
+        mView.findViewById(R.id.emptyText).setVisibility(View.VISIBLE);
+
         if (!NetworkUtils.areRequestsPending(mResolveSemaphores) &&
                 !NetworkUtils.areRequestsPending(mVoteSemaphores)) {
             NetworkUtils.printResponse(TAG, "onQuestionsLoaded", json);
@@ -218,7 +221,10 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.d(TAG, "onLoadFinished");
+        if (cursor.getCount() > 0) {
+            mView.findViewById(R.id.progress).setVisibility(View.GONE);
+            mView.findViewById(R.id.emptyText).setVisibility(View.VISIBLE);
+        }
         mAdapter.swapCursor(cursor);
     }
 
