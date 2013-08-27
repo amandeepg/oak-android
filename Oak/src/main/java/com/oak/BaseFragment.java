@@ -46,6 +46,9 @@ public class BaseFragment extends Fragment implements PullToRefreshAttacher.OnRe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         mPullToRefreshAttacher = ((BaseActivity) getActivity()).getPullToRefreshAttacher();
+        if (savedInstanceState == null) {
+            setRefreshing(true);
+        }
         return null;
     }
 

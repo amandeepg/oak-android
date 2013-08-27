@@ -58,7 +58,6 @@ public class CoursesFragment extends BaseFragment implements
         super.onCreateView(inflater, container, savedInstanceState);
         mView = inflater.inflate(R.layout.courses, container, false);
         setUpListView();
-        setRefreshing(true);
         return mView;
     }
 
