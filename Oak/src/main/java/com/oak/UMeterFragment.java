@@ -4,9 +4,11 @@
 
 package com.oak;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,10 +59,11 @@ public class UMeterFragment extends BaseFragment {
 
         // Find the chart view
         mChartView = (ChartView) v.findViewById(R.id.chart_view);
+        mChartView.setGridLineColor(Color.LTGRAY);
 
         // Create the data points
         mSeries.setLineColor(0xFF0099CC);
-        mSeries.setLineWidth(3);
+        mSeries.setLineWidth(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
 
         // Add chart view data
         mChartView.addSeries(mSeries);
