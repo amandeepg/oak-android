@@ -64,6 +64,7 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
         super.onCreateView(inflater, container, savedInstanceState);
         mView = inflater.inflate(R.layout.questions_fragment, container, false);
         setUpListView();
+        setRefreshing(true);
         mView.findViewById(R.id.submit_question).setOnClickListener(new View.OnClickListener() {
 
             @Override
