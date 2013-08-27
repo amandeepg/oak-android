@@ -28,16 +28,10 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.oak.db.CoursesContract;
 import com.oak.db.OakContentProvider;
 import com.oak.utils.AppMsgFactory;
-import com.oak.utils.NetworkUtils;
-import com.oak.utils.OakGetRequestFactory;
-import com.oak.utils.OakPostParams;
 import com.oak.utils.UiUtils;
-import com.oak.volley.JsonPostRequest;
 
 import org.json.JSONObject;
 
@@ -121,29 +115,23 @@ public class CoursesFragment extends BaseFragment implements
     }
 
     private void createLoadRequest() {
-        JsonObjectRequest loadRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                new OakGetRequestFactory("CourseList").url(),
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        onCoursesLoaded(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        setRefreshComplete();
-                        AppMsgFactory.somethingWentWrong(getActivity());
-                    }
-                }
-        );
+        Response.Listener<JSONObject> responseListener = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                onCoursesLoaded(response);
+            }
+        };
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                setRefreshComplete();
+            }
+        };
+        Request loadRequest = OakApi.getCourses(getActivity(), responseListener, errorListener);
         addRequest(loadRequest);
     }
 
     private void onCoursesLoaded(JSONObject json) {
-        NetworkUtils.printResponse(TAG, "courses", json);
         setRefreshComplete();
 
         mView.findViewById(R.id.progress).setVisibility(View.GONE);
@@ -154,7 +142,6 @@ public class CoursesFragment extends BaseFragment implements
     }
 
     private void onCourseAdded(JSONObject json) {
-        NetworkUtils.printResponse(TAG, "addCourse", json);
         if (json != null) {
             AppMsgFactory.finishMsg(this, R.string.course_added);
             postLoadDelayed(0);
@@ -164,8 +151,6 @@ public class CoursesFragment extends BaseFragment implements
     }
 
     private void onCourseJoined(String s, Course course, String coursePass) {
-        NetworkUtils.printResponse(TAG, "joinCourse", s);
-
         if (s == null || !s.contains("1")) {
             AppMsgFactory.finishMsg(this, R.string.wrong_password, R.color.alert);
             return;
@@ -221,24 +206,19 @@ public class CoursesFragment extends BaseFragment implements
     private void joinCourse(final Course course, final String coursePass) {
         AppMsgFactory.startMsg(this, R.string.joining_course);
 
-        StringRequest req = new StringRequest(
-                Request.Method.GET,
-                new OakGetRequestFactory("VerifyCoursePassword")
-                        .add("courseCode", course.getName())
-                        .add("coursePassword", coursePass)
-                        .url(),
+        Bundle data = new Bundle();
+        data.putString(OakApi.COURSE_CODE, course.getName());
+        data.putString(OakApi.COURSE_PASSWORD, coursePass);
+
+        Request req = OakApi.postCoursePassword(getActivity(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
                         onCourseJoined(s, course, coursePass);
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        AppMsgFactory.somethingWentWrong(getActivity());
-                    }
-                }
+                null,
+                data
         );
         addRequest(req);
     }
@@ -260,23 +240,19 @@ public class CoursesFragment extends BaseFragment implements
 
         AppMsgFactory.startMsg(getActivity(), R.string.adding_course);
 
-        JsonPostRequest req = new JsonPostRequest(
-                OakConfig.endPoint("AddCourse"),
-                new OakPostParams()
-                        .add("courseCode", courseCode)
-                        .add("coursePassword", coursePass),
+        Bundle data = new Bundle();
+        data.putString(OakApi.COURSE_CODE, courseCode);
+        data.putString(OakApi.COURSE_PASSWORD, coursePass);
+
+        Request req = OakApi.postCourse(getActivity(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         onCourseAdded(response);
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        AppMsgFactory.somethingWentWrong(getActivity());
-                    }
-                }
+                null,
+                data
         );
         addRequest(req);
     }

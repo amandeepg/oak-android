@@ -16,17 +16,10 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.michaelpardo.android.widget.chartview.ChartView;
 import com.michaelpardo.android.widget.chartview.LinearSeries;
 import com.oak.R.id;
-import com.oak.utils.AppMsgFactory;
-import com.oak.utils.NetworkUtils;
-import com.oak.utils.OakGetRequestFactory;
-import com.oak.utils.OakPostParams;
 import com.oak.utils.TimeUtils;
-import com.oak.volley.JsonPostRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,23 +97,16 @@ public class UMeterFragment extends BaseFragment {
     }
 
     private void createLoadRequest() {
-        JsonObjectRequest loadRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                new OakGetRequestFactory("UnderstandingStatus")
-                        .add("courseCode", QMTabActivity.courseCode)
-                        .add("coursePassword", QMTabActivity.coursePass)
-                        .addDeviceID(getActivity())
-                        .url(),
-                null,
+        Request loadRequest = OakApi.getUnderstanding(getActivity(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject json) {
                         onUnderstandingLoaded(json);
                     }
                 },
-                null
+                null,
+                getCourseDataBundle()
         );
-
         addRequest(loadRequest);
     }
 
@@ -163,26 +149,9 @@ public class UMeterFragment extends BaseFragment {
                 if (mWaitingChanges == 0) {
                     Log.d(TAG, "progress = " + progress);
 
-                    final JsonPostRequest req = new JsonPostRequest(
-                            OakConfig.endPoint("VoteCourse"),
-                            new OakPostParams()
-                                    .add("courseCode", QMTabActivity.courseCode)
-                                    .add("coursePassword", QMTabActivity.coursePass)
-                                    .add("vote", "" + progress)
-                                    .addDeviceID(getActivity()),
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    NetworkUtils.printResponse(TAG, "understandingVote", response);
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    AppMsgFactory.somethingWentWrong(getActivity());
-                                }
-                            }
-                    );
+                    Bundle data = getCourseDataBundle();
+                    data.putString(OakApi.VOTE, Integer.toString(progress));
+                    Request req = OakApi.postUnderstanding(getActivity(), null, null, data);
                     addRequest(req);
                 }
             }
@@ -190,8 +159,6 @@ public class UMeterFragment extends BaseFragment {
     }
 
     public void onUnderstandingLoaded(JSONObject json) {
-        NetworkUtils.printResponse(TAG, "understanding", json);
-
         if (json != null) {
             try {
                 int understanding = json.getInt("understanding");
@@ -234,5 +201,12 @@ public class UMeterFragment extends BaseFragment {
         }
 
         mVotedAgoTextView.setText(getString(R.string.last_vote) + " " + timeAgo);
+    }
+
+    private Bundle getCourseDataBundle() {
+        Bundle data = new Bundle();
+        data.putString(OakApi.COURSE_CODE, QMTabActivity.courseCode);
+        data.putString(OakApi.COURSE_PASSWORD, QMTabActivity.coursePass);
+        return data;
     }
 }

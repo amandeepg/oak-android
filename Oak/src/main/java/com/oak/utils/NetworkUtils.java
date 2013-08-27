@@ -4,8 +4,6 @@
 
 package com.oak.utils;
 
-import android.util.Log;
-
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
@@ -42,9 +40,5 @@ public class NetworkUtils {
             sem.acquireUninterruptibly();
             return false;
         }
-    }
-
-    public static void printResponse(String TAG, String msg, Object o) {
-        Log.d(TAG, "load data from server: " + msg + " - " + (o == null ? "null" : o.toString()));
     }
 }
