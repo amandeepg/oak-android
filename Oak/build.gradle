@@ -16,6 +16,7 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.0.2'
     compile 'com.github.chrisbanes.actionbarpulltorefresh:library:0.7'
     compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abc:0.7'
+    compile 'com.squareup.okhttp:okhttp:1.2.0'
     compile project(':Volley')
     compile fileTree(dir: 'libs', include: '*.jar')
 }
