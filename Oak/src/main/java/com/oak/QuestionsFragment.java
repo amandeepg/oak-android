@@ -74,7 +74,7 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
     @Override
      public void onStart() {
         super.onStart();
-        createLoadRequest();
+        postLoadDelayed(OakConfig.AUTO_REFRESH_QUESTIONS_MILLIS);
     }
 
     @Override

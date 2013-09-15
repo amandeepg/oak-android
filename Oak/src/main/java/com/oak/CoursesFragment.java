@@ -30,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.oak.db.CoursesContract;
 import com.oak.db.OakContentProvider;
+import com.oak.db.QuestionsContract;
 import com.oak.utils.AppMsgFactory;
 import com.oak.utils.OakJSONObject;
 import com.oak.utils.UiUtils;
@@ -77,6 +78,7 @@ public class CoursesFragment extends BaseFragment implements
     @Override
      public void onStart() {
         super.onStart();
+        setRefreshing(true);
         createLoadRequest();
     }
 
@@ -155,6 +157,8 @@ public class CoursesFragment extends BaseFragment implements
             AppMsgFactory.finishMsg(this, R.string.wrong_password, R.color.alert);
             return;
         }
+
+        QuestionsContract.insert(Question.parseJson(json, course.getId()), getActivity().getContentResolver());
 
         AppMsgFactory.finishMsg(getActivity());
         course.setPassword(coursePass);
