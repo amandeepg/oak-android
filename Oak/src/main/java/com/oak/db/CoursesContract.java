@@ -22,11 +22,13 @@ public class CoursesContract {
 
     public static Uri CONTENT_URI = OakContentProvider.COURSE_CONTENT_URI;
 
-    public static final String COLUMN_ID = BaseColumns._ID;
+    public static final String COLUMN__ID = BaseColumns._ID;
+    public static final String COLUMN_ID = "id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_PASSWORD = "password";
 
     public static final String[] FULL_PROJECTION = {
+            COLUMN__ID,
             COLUMN_ID,
             COLUMN_NAME,
             COLUMN_PASSWORD,
@@ -36,7 +38,8 @@ public class CoursesContract {
     private static final String DATABASE_CREATE = "create table "
             + TABLE_NAME
             + "("
-            + COLUMN_ID + " integer primary key autoincrement, "
+            + COLUMN__ID + " integer primary key autoincrement, "
+            + COLUMN_ID + " integer, "
             + COLUMN_NAME + " text not null, "
             + COLUMN_PASSWORD + " text "
             + ");";
@@ -60,6 +63,7 @@ public class CoursesContract {
 
     private static ContentValues getValues(Course course) {
         ContentValues values = new ContentValues();
+        values.put(COLUMN_ID, course.getId());
         values.put(COLUMN_NAME, course.getName());
         values.put(COLUMN_PASSWORD, course.getPassword());
         return  values;
@@ -76,7 +80,7 @@ public class CoursesContract {
     }
 
     public static int update(Course course, ContentResolver resolver) {
-        return resolver.update(CONTENT_URI, getValues(course), "(" + COLUMN_NAME + "=" + "?)",
-                new String[] { course.getName() });
+        return resolver.update(CONTENT_URI, getValues(course), COLUMN_ID + "=" + "?",
+                new String[] { String.valueOf(course.getId()) });
     }
 }

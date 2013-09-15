@@ -30,6 +30,7 @@ import com.oak.db.OakContentProvider;
 import com.oak.db.QuestionsContract;
 import com.oak.utils.AppMsgFactory;
 import com.oak.utils.NetworkUtils;
+import com.oak.utils.OakJSONObject;
 
 import org.json.JSONObject;
 
@@ -125,8 +126,8 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
 
     private Bundle getCourseDataBundle() {
         Bundle data = new Bundle();
-        data.putString(OakApi.COURSE_CODE, QMTabActivity.courseCode);
-        data.putString(OakApi.COURSE_PASSWORD, QMTabActivity.coursePass);
+        data.putString(OakApi.COURSE_ID, QMTabActivity.course.getId());
+        data.putString(OakApi.COURSE_PASSWORD, QMTabActivity.course.getPassword());
         return data;
     }
 
@@ -150,7 +151,7 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
 
         if (!NetworkUtils.areRequestsPending(mResolveSemaphores) &&
                 !NetworkUtils.areRequestsPending(mVoteSemaphores)) {
-            QuestionsContract.insert(Question.parseJson(json, QMTabActivity.courseCode), getActivity().getContentResolver());
+            QuestionsContract.insert(Question.parseJson(json, QMTabActivity.course.getId()), getActivity().getContentResolver());
         }
         postLoadDelayed(OakConfig.AUTO_REFRESH_QUESTIONS_MILLIS);
     }
@@ -168,8 +169,9 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(questionsTextView.getWindowToken(), 0);
 
-        Bundle data = getCourseDataBundle();
-        data.putString(OakApi.QUESTION, questionText);
+        OakJSONObject data = new OakJSONObject();
+        data.safePut(OakApi.QUESTION, questionText);
+
         Request req = OakApi.postQuestion(getActivity(),
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -178,15 +180,15 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
                     }
                 },
                 null,
+                getCourseDataBundle(),
                 data
         );
         addRequest(req);
     }
 
     private void onQuestionAdded(JSONObject json) {
-        if (json != null) {
+        if (json.optInt("questionId") != 0) {
             AppMsgFactory.finishMsg(this, R.string.question_added);
-            createLoadRequest();
         } else {
             AppMsgFactory.somethingWentWrong(getActivity());
         }
@@ -197,8 +199,8 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
         return new CursorLoader(getActivity(),
                 OakContentProvider.QUESTION_CONTENT_URI,
                 QuestionsContract.FULL_PROJECTION,
-                "(" + QuestionsContract.COLUMN_COURSE_NAME + "=?)",
-                new String[] { QMTabActivity.courseCode },
+                QuestionsContract.COLUMN_COURSE_ID + "=?",
+                new String[] { String.valueOf(QMTabActivity.course.getId()) },
                 QuestionsContract.DEFAULT_SORT);
     }
 
@@ -221,13 +223,16 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
         ContentValues values = new ContentValues();
         values.put(QuestionsContract.COLUMN_DEVICE_RESOLVE_VOTE, isResolved ? 1 : 0);
         getActivity().getContentResolver().update(OakContentProvider.QUESTION_CONTENT_URI,
-                values, "(" + QuestionsContract.COLUMN_ID + "=" + "?)", new String [] { id });
+                values, QuestionsContract.COLUMN_ID + "=" + "?", new String [] { id });
 
         NetworkUtils.incrementFire(mResolveSemaphores, id);
         Bundle data = getCourseDataBundle();
-        data.putString(OakApi.RESOLVE_VOTE, isResolved ? "1" : "0");
         data.putString(OakApi.QUESTION_ID, id);
-        final Request req = OakApi.postResolve(getActivity(),
+
+        OakJSONObject jsonRequest = new OakJSONObject();
+        jsonRequest.safePut(OakApi.RESOLVE_VOTE, isResolved ? "1" : "0");
+
+        final Request req = OakApi.postQuestionVote(getActivity(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -236,7 +241,8 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
                     }
                 },
                 null,
-                data
+                data,
+                jsonRequest
         );
         req.setShouldCache(false);
 
@@ -254,23 +260,27 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
     public void onVote(String vote, final String id) {
         ContentResolver resolver = getActivity().getContentResolver();
         Cursor voteQueryCursor = resolver.query(OakContentProvider.QUESTION_CONTENT_URI,
-                new String[] { QuestionsContract.COLUMN_VOTES },
-                "(" + QuestionsContract.COLUMN_ID + "=" + "?)",
+                new String[] { QuestionsContract.COLUMN_DEVICE_VOTE, QuestionsContract.COLUMN_VOTES },
+                QuestionsContract.COLUMN_ID + "=" + "?",
                 new String[] { id },
                 null);
         voteQueryCursor.moveToFirst();
+        int deviceVotes = voteQueryCursor.getInt(voteQueryCursor.getColumnIndex(QuestionsContract.COLUMN_DEVICE_VOTE));
         int votes = voteQueryCursor.getInt(voteQueryCursor.getColumnIndex(QuestionsContract.COLUMN_VOTES));
 
         ContentValues values = new ContentValues();
         values.put(QuestionsContract.COLUMN_DEVICE_VOTE, vote);
-        values.put(QuestionsContract.COLUMN_VOTES, votes + Integer.parseInt(vote));
+        values.put(QuestionsContract.COLUMN_VOTES, votes - deviceVotes + Integer.parseInt(vote));
         resolver.update(OakContentProvider.QUESTION_CONTENT_URI,
-                values, "(" + QuestionsContract.COLUMN_ID + "=" + "?)", new String[]{id});
+                values, QuestionsContract.COLUMN_ID + "=" + "?", new String[]{id});
 
         NetworkUtils.incrementFire(mVoteSemaphores, id);
         Bundle data = getCourseDataBundle();
-        data.putString(OakApi.VOTE, vote);
         data.putString(OakApi.QUESTION_ID, id);
+
+        OakJSONObject jsonRequest = new OakJSONObject();
+        jsonRequest.safePut(OakApi.DEVICE_VOTE, vote);
+
         final Request req = OakApi.postQuestionVote(getActivity(),
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -280,7 +290,8 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
                     }
                 },
                 null,
-                data
+                data,
+                jsonRequest
         );
         req.setShouldCache(false);
 

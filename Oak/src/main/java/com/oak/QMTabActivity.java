@@ -9,8 +9,7 @@ import android.os.Bundle;
 import com.oak.utils.TabSwipeActivity;
 
 public class QMTabActivity extends TabSwipeActivity {
-    public static String courseCode;
-    public static String coursePass;
+    public static Course course;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,12 +17,11 @@ public class QMTabActivity extends TabSwipeActivity {
 
         Bundle b = getIntent().getExtras();
         if (b != null) {
-            courseCode = b.getCharSequence("courseCode").toString();
-            coursePass = b.getCharSequence("coursePass").toString();
+            course = b.getParcelable("course");
         }
 
         addTab(R.string.umeter_title, UMeterFragment.class);
         addTab(R.string.questions_title, QuestionsFragment.class);
-        setTitle(courseCode);
+        setTitle(course.getName());
     }
 }

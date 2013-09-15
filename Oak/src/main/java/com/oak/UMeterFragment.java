@@ -21,9 +21,9 @@ import com.android.volley.Response;
 import com.michaelpardo.android.widget.chartview.ChartView;
 import com.michaelpardo.android.widget.chartview.LinearSeries;
 import com.oak.R.id;
+import com.oak.utils.OakJSONObject;
 import com.oak.utils.TimeUtils;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UMeterFragment extends BaseFragment {
@@ -152,9 +152,13 @@ public class UMeterFragment extends BaseFragment {
                 if (mWaitingChanges == 0) {
                     Log.d(TAG, "progress = " + progress);
 
-                    Bundle data = getCourseDataBundle();
-                    data.putString(OakApi.VOTE, Integer.toString(progress));
-                    Request req = OakApi.postUnderstanding(getActivity(), null, null, data);
+                    OakJSONObject data = new OakJSONObject();
+                    data.safePut(OakApi.VOTE, String.valueOf(progress));
+
+                    Request req = OakApi.postUnderstanding(
+                            getActivity(),
+                            null, null,
+                            getCourseDataBundle(), data);
                     addRequest(req);
                 }
             }
@@ -163,32 +167,20 @@ public class UMeterFragment extends BaseFragment {
 
     public void onUnderstandingLoaded(JSONObject json) {
         if (json != null) {
-            try {
-                int understanding = json.getInt("understanding");
-                if (mLastVoteTime == -1) {
+            int understanding = json.optInt("understanding");
 
-                    try {
-                        mVoteBar.setProgress(json.getInt("deviceVote"));
-                    } catch (JSONException e) {
-                        mVoteBar.setProgress(50);
-                    }
-                    try {
-                        mLastVoteTime = json.getLong("timeLastVoted");
-                    } catch (JSONException e) {
-                        mLastVoteTime = -1;
-                    }
-                }
-
-                mSeries.addPoint(new LinearSeries.LinearPoint(mCurrGraphPosX, understanding + (int) (Math.random() * 1)));
-                mChartView.setRange(mCurrGraphPosX - 20, mCurrGraphPosX, 0, 100);
-                mSeries.setRange(mCurrGraphPosX - 20, mCurrGraphPosX, 0, 100);
-                mCurrGraphPosX++;
-                mChartView.invalidate();
-
-                setTimeAgoText();
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (mLastVoteTime == -1) {
+                mVoteBar.setProgress(json.optInt("deviceUnderstanding"));
+                mLastVoteTime = json.optString("deviceTimeLastVoted").equals("N/A") ? -1 : json.optLong("deviceTimeLastVoted");
             }
+
+            mSeries.addPoint(new LinearSeries.LinearPoint(mCurrGraphPosX, understanding + (int) (Math.random() * 1)));
+            mChartView.setRange(mCurrGraphPosX - 20, mCurrGraphPosX, 0, 100);
+            mSeries.setRange(mCurrGraphPosX - 20, mCurrGraphPosX, 0, 100);
+            mCurrGraphPosX++;
+            mChartView.invalidate();
+
+            setTimeAgoText();
         }
         postLoadDelayed(OakConfig.AUTO_REFRESH_UNDERSTANDING_MILLIS);
     }
@@ -208,8 +200,8 @@ public class UMeterFragment extends BaseFragment {
 
     private Bundle getCourseDataBundle() {
         Bundle data = new Bundle();
-        data.putString(OakApi.COURSE_CODE, QMTabActivity.courseCode);
-        data.putString(OakApi.COURSE_PASSWORD, QMTabActivity.coursePass);
+        data.putString(OakApi.COURSE_ID, QMTabActivity.course.getId());
+        data.putString(OakApi.COURSE_PASSWORD, QMTabActivity.course.getPassword());
         return data;
     }
 }

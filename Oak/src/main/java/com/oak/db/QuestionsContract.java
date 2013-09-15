@@ -24,7 +24,7 @@ public class QuestionsContract {
 
     public static final String COLUMN__ID = BaseColumns._ID;
     public static final String COLUMN_ID = "id";
-    public static final String COLUMN_COURSE_NAME = "name";
+    public static final String COLUMN_COURSE_ID = "course_id";
     public static final String COLUMN_QUESTION = "question";
     public static final String COLUMN_VOTES = "votes";
     public static final String COLUMN_DEVICE_VOTE = "device_vote";
@@ -35,7 +35,7 @@ public class QuestionsContract {
     public static final String[] FULL_PROJECTION = {
             COLUMN__ID,
             COLUMN_ID,
-            COLUMN_COURSE_NAME,
+            COLUMN_COURSE_ID,
             COLUMN_QUESTION,
             COLUMN_VOTES,
             COLUMN_DEVICE_VOTE,
@@ -50,7 +50,7 @@ public class QuestionsContract {
             + "("
             + COLUMN__ID + " integer primary key autoincrement, "
             + COLUMN_ID + " integer, "
-            + COLUMN_COURSE_NAME + " text not null, "
+            + COLUMN_COURSE_ID + " integer, "
             + COLUMN_QUESTION + " text not null, "
             + COLUMN_VOTES + " integer, "
             + COLUMN_DEVICE_VOTE + " integer, "
@@ -78,7 +78,7 @@ public class QuestionsContract {
         ContentValues values = new ContentValues();
 
         values.put(COLUMN_ID, question.getId());
-        values.put(COLUMN_COURSE_NAME, question.getCourseName());
+        values.put(COLUMN_COURSE_ID, question.getCourseId());
         values.put(COLUMN_QUESTION, question.getQuestion());
         values.put(COLUMN_VOTES, question.getVotes());
         values.put(COLUMN_DEVICE_VOTE, question.getDeviceVote());
@@ -99,6 +99,6 @@ public class QuestionsContract {
     }
 
     public static int update(Question question, ContentResolver resolver) {
-        return resolver.update(CONTENT_URI, getValues(question), "(" + COLUMN_ID + "=" + "?)", new String[] { question.getId() });
+        return resolver.update(CONTENT_URI, getValues(question), COLUMN_ID + "=" + "?", new String[] { question.getId() });
     }
 }

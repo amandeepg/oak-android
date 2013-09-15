@@ -31,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.oak.db.CoursesContract;
 import com.oak.db.OakContentProvider;
 import com.oak.utils.AppMsgFactory;
+import com.oak.utils.OakJSONObject;
 import com.oak.utils.UiUtils;
 
 import org.json.JSONObject;
@@ -141,16 +142,16 @@ public class CoursesFragment extends BaseFragment implements
     }
 
     private void onCourseAdded(JSONObject json) {
-        if (json != null) {
+        if (json.optInt("courseId") != 0) {
             AppMsgFactory.finishMsg(this, R.string.course_added);
-            postLoadDelayed(0);
         } else {
             AppMsgFactory.somethingWentWrong(getActivity());
         }
+        postLoadDelayed(0);
     }
 
-    private void onCourseJoined(String s, Course course, String coursePass) {
-        if (s == null || !s.contains("1")) {
+    private void onCourseJoined(JSONObject json, Course course, String coursePass) {
+        if (json == null) {
             AppMsgFactory.finishMsg(this, R.string.wrong_password, R.color.alert);
             return;
         }
@@ -159,8 +160,7 @@ public class CoursesFragment extends BaseFragment implements
         course.setPassword(coursePass);
         CoursesContract.update(course, getActivity().getContentResolver());
         final Intent mIntent = new Intent(getActivity(), QMTabActivity.class);
-        mIntent.putExtra("courseCode", course.getName());
-        mIntent.putExtra("coursePass", coursePass);
+        mIntent.putExtra("course", course);
         startActivity(mIntent);
     }
 
@@ -192,7 +192,7 @@ public class CoursesFragment extends BaseFragment implements
                 .setView(dialogView)
                 .setPositiveButton(R.string.join, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface _dialog, int _i) {
+                    public void onClick(DialogInterface dialog, int _i) {
                         EditText coursePassText = (EditText) dialogView.findViewById(R.id.course_pass);
                         String coursePass = coursePassText.getText().toString();
                         joinCourse(course, coursePass);
@@ -206,14 +206,14 @@ public class CoursesFragment extends BaseFragment implements
         AppMsgFactory.startMsg(this, R.string.joining_course);
 
         Bundle data = new Bundle();
-        data.putString(OakApi.COURSE_CODE, course.getName());
+        data.putString(OakApi.COURSE_ID, course.getId());
         data.putString(OakApi.COURSE_PASSWORD, coursePass);
 
-        Request req = OakApi.postCoursePassword(getActivity(),
-                new Response.Listener<String>() {
+        Request req = OakApi.getQuestions(getActivity(),
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String s) {
-                        onCourseJoined(s, course, coursePass);
+                    public void onResponse(JSONObject json) {
+                        onCourseJoined(json, course, coursePass);
                     }
                 },
                 null,
@@ -239,9 +239,9 @@ public class CoursesFragment extends BaseFragment implements
 
         AppMsgFactory.startMsg(getActivity(), R.string.adding_course);
 
-        Bundle data = new Bundle();
-        data.putString(OakApi.COURSE_CODE, courseCode);
-        data.putString(OakApi.COURSE_PASSWORD, coursePass);
+        OakJSONObject data = new OakJSONObject();
+        data.safePut(OakApi.COURSE_CODE, courseCode);
+        data.safePut(OakApi.COURSE_PASSWORD, coursePass);
 
         Request req = OakApi.postCourse(getActivity(),
                 new Response.Listener<JSONObject>() {
