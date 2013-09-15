@@ -116,11 +116,11 @@ public class OakContentProvider extends ContentProvider {
             switch (uriType) {
                 case COURSES:
                     values.remove(CoursesContract.COLUMN_PASSWORD);
-                    update(uri, values, "(" + CoursesContract.COLUMN_NAME + "=" + "?)",
-                            new String[] { values.get(CoursesContract.COLUMN_NAME).toString() });
+                    update(uri, values, CoursesContract.COLUMN_ID + "=" + "?",
+                            new String[] { values.get(CoursesContract.COLUMN_ID).toString() });
                     break;
                 case QUESTIONS:
-                    update(uri, values, "(" + QuestionsContract.COLUMN_ID + "=" + "?)",
+                    update(uri, values, QuestionsContract.COLUMN_ID + "=" + "?",
                             new String[] { values.get(QuestionsContract.COLUMN_ID).toString() });
                     break;
                 default:

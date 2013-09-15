@@ -9,7 +9,6 @@ import android.database.Cursor;
 import com.oak.db.QuestionsContract;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -22,8 +21,8 @@ public class Question {
     private String question;
     private String deviceVote;
     private String id;
-    private String courseName;
-    private int weightedImportance;
+    private String courseId;
+    private long weightedImportance;
 
     public Question() {
     }
@@ -37,52 +36,34 @@ public class Question {
         question = c.getString(c.getColumnIndex(QuestionsContract.COLUMN_QUESTION));
         deviceVote = c.getString(c.getColumnIndex(QuestionsContract.COLUMN_DEVICE_VOTE));
         id = c.getString(c.getColumnIndex(QuestionsContract.COLUMN_ID));
-        courseName = c.getString(c.getColumnIndex(QuestionsContract.COLUMN_COURSE_NAME));
+        courseId = c.getString(c.getColumnIndex(QuestionsContract.COLUMN_COURSE_ID));
         weightedImportance = c.getInt(c.getColumnIndex(QuestionsContract.COLUMN_WEIGHTED_IMPORTANCE));
     }
 
+    public static ArrayList<Question> parseJson(JSONObject dataFromServer, String courseId) {
+        JSONArray questionsArr = dataFromServer.optJSONArray("questions");
+        ArrayList<Question> newData = new ArrayList<Question>(questionsArr.length());
 
-    public static ArrayList<Question> parseJson(JSONObject dataFromServer, String courseCode) {
-        try {
-            return parseJsonAndThrow(dataFromServer, courseCode);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static ArrayList<Question> parseJsonAndThrow(JSONObject dataFromServer, String courseCode) throws JSONException {
-        JSONArray topQuestionsArr = dataFromServer.getJSONArray("topVotedQuestion");
-        JSONArray questionsArr = dataFromServer.getJSONArray("questions");
-        ArrayList<Question> newData = new ArrayList<Question>(questionsArr.length() + topQuestionsArr.length());
-
-        parseJsonArray(topQuestionsArr, newData);
-        parseJsonArray(questionsArr, newData);
-
-        for (Question q: newData) {
-            q.setCourseName(courseCode);
+        for (int x = 0; x < questionsArr.length(); x++) {
+            JSONObject question = questionsArr.optJSONObject(x);
+            Question q = parseJsonSingle(question);
+            q.setCourseId(courseId);
+            newData.add(q);
         }
 
         return newData;
     }
 
-    private static void parseJsonArray(JSONArray questionsArr, ArrayList<Question> newData) throws JSONException {
-        for (int x = 0; x < questionsArr.length(); x++) {
-            JSONObject question = questionsArr.getJSONObject(x);
-            parseJsonSingle(newData, question);
-        }
-    }
-
-    private static void parseJsonSingle(ArrayList<Question> newData, JSONObject json) throws JSONException {
+    private static Question parseJsonSingle(JSONObject json) {
         Question question = new Question();
-        question.question = json.getString("question");
-        question.id = json.getString("id");
-        question.votes = Integer.parseInt(json.getString("vote").trim());
-        question.weightedImportance = Integer.parseInt(json.getString("weightedImportance").trim());
-        question.timeCreated = Long.parseLong(json.getString("timeCreated").trim());
-        question.deviceVote = json.getString("deviceVote");
-        question.deviceResolveVote = json.getString("deviceResolveVote").equals("1");
-        newData.add(question);
+        question.question = json.optString("question");
+        question.id = json.optString("questionId");
+        question.votes = Integer.parseInt(json.optString("votes").trim());
+        question.weightedImportance = Long.parseLong(json.optString("weightedImportance").trim());
+        question.timeCreated = Long.parseLong(json.optString("timeCreated").trim());
+        question.deviceVote = json.optString("deviceVote");
+        question.deviceResolveVote = json.optString("deviceResolveVote").equals("1");
+        return question;
     }
 
     public String getId() {
@@ -133,19 +114,19 @@ public class Question {
         this.deviceResolveVote = deviceResolveVote;
     }
 
-    public String getCourseName() {
-        return courseName;
+    public String getCourseId() {
+        return courseId;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
-    public int getWeightedImportance() {
+    public long getWeightedImportance() {
         return weightedImportance;
     }
 
-    public void setWeightedImportance(int weightedImportance) {
+    public void setWeightedImportance(long weightedImportance) {
         this.weightedImportance = weightedImportance;
     }
 }

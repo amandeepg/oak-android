@@ -4,12 +4,10 @@
 
 package com.oak.utils;
 
-import android.util.Log;
-
 public class GetRequestFactory {
 
     private static final String TAG = "GetRequestFactory";
-    StringBuilder sb;
+    private StringBuilder sb;
     boolean keyAdded;
 
     public GetRequestFactory(String root) {
@@ -30,11 +28,18 @@ public class GetRequestFactory {
     }
 
     public String url() {
-        Log.d(TAG, "firing get: " + sb.toString());
         return sb.toString();
     }
 
     public String toString() {
         return sb.toString();
+    }
+
+    public int indexOf(String string){
+        return sb.indexOf(string);
+    }
+
+    public void replace(int start, int end, String replacer) {
+        sb.replace(start, end, replacer);
     }
 }

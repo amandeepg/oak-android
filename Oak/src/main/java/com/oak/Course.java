@@ -5,19 +5,20 @@
 package com.oak;
 
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.oak.db.CoursesContract;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Course {
+public class Course implements Parcelable {
     private String password;
-    private long id;
+    private String id;
     private String name;
 
     public Course() {
@@ -27,35 +28,33 @@ public class Course {
         this();
         name = c.getString(c.getColumnIndex(CoursesContract.COLUMN_NAME));
         password = c.getString(c.getColumnIndex(CoursesContract.COLUMN_PASSWORD));
+        id = c.getString(c.getColumnIndex(CoursesContract.COLUMN_ID));
+    }
+
+    public Course(JSONObject obj) {
+        this();
+        name = obj.optString("courseCode");
+        id = obj.optString("courseId");
     }
 
     public static List<Course> parseJson(JSONObject json) {
-        try {
-            return parseJsonAndThrow(json);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private static List<Course> parseJsonAndThrow(JSONObject json) throws JSONException {
-        JSONArray coursesFromServer = json.getJSONArray("courses");
+        JSONArray coursesFromServer = json.optJSONArray("courses");
         ArrayList<Course> newData = new ArrayList<Course>(coursesFromServer.length());
 
         for (int x = 0; x < coursesFromServer.length(); x++) {
-            Course course = new Course();
-            course.setName(coursesFromServer.getString(x));
+            JSONObject obj = coursesFromServer.optJSONObject(x);
+            Course course = new Course(obj);
             newData.add(course);
         }
 
         return newData;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -74,4 +73,32 @@ public class Course {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(password);
+        out.writeString(id);
+        out.writeString(name);
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>() {
+        public Course createFromParcel(Parcel in) {
+            return new Course(in);
+        }
+
+        public Course[] newArray(int size) {
+            return new Course[size];
+        }
+    };
+
+    private Course(Parcel in) {
+        password = in.readString();
+        id = in.readString();
+        name = in.readString();
+    }
+
 }
