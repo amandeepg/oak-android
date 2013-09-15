@@ -6,6 +6,7 @@ package com.oak;
 
 import android.os.Bundle;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 
 public class CoursesActivity extends BaseActivity {
@@ -13,6 +14,7 @@ public class CoursesActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
 
         // Check if this activity was created before
         if (savedInstanceState == null) {

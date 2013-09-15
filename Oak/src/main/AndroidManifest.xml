@@ -34,5 +34,6 @@
                 android:authorities="com.oak.courses.contentprovider"
                 android:exported="false">
         </provider>
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="83f6e6b9b19521f64113f4df1b53506c57abc5de"/>
     </application>
 </manifest>
