@@ -6,7 +6,6 @@ package com.oak.utils;
 
 public class GetRequestFactory {
 
-    private static final String TAG = "GetRequestFactory";
     private StringBuilder sb;
     boolean keyAdded;
 
