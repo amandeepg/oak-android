@@ -7,7 +7,9 @@ package com.oak;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshAttacher;
@@ -20,6 +22,9 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
+
+        Crashlytics.log(Log.DEBUG, TAG, TAG + " onCreate");
         mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
     }
 
@@ -30,12 +35,14 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     public void onStart() {
         super.onStart();
-        EasyTracker.getInstance().activityStart(this);
+        Crashlytics.log(Log.DEBUG, TAG, TAG + " onStart");
+        EasyTracker.getInstance(this).activityStart(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        EasyTracker.getInstance().activityStop(this);
+        Crashlytics.log(Log.DEBUG, TAG, TAG + " onStop");
+        EasyTracker.getInstance(this).activityStop(this);
     }
 }

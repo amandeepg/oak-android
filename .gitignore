@@ -30,3 +30,5 @@ proguard/
 .idea/
 
 .gradle/
+com_crashlytics_export_strings.xml
+

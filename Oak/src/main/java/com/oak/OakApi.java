@@ -7,11 +7,13 @@ package com.oak;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.crashlytics.android.Crashlytics;
 import com.oak.utils.AppMsgFactory;
 import com.oak.utils.OakJSONObject;
 import com.oak.utils.OakUrlFactory;
@@ -20,10 +22,11 @@ import org.json.JSONObject;
 
 public class OakApi {
 
+    public static final String TAG = "OakApi";
+
     public static final String COURSE_CODE = "courseCode";
     public static final String COURSE_ID = "<course_id>";
     public static final String COURSE_PASSWORD = "coursePassword";
-    public static final String PASSWORD = "password";
     public static final String QUESTION = "question";
     public static final String RESOLVE_VOTE = "deviceResolveVote";
     public static final String QUESTION_ID = "<question_id>";
@@ -34,6 +37,7 @@ public class OakApi {
     public static Request getCourses(final Activity activity,
                                      final Response.Listener<JSONObject> responseListener,
                                      final Response.ErrorListener errorListener){
+        Crashlytics.log(Log.DEBUG, TAG, "start load: getCourses");
         return new JsonObjectRequest(
                 Request.Method.GET,
                 new OakUrlFactory("courses").url(),
@@ -47,6 +51,7 @@ public class OakApi {
                                        final Response.Listener<JSONObject> responseListener,
                                        final Response.ErrorListener errorListener,
                                        final Bundle data) {
+        Crashlytics.log(Log.DEBUG, TAG, "start load: getQuestions");
         return new JsonObjectRequest(
                 Request.Method.GET,
                 new OakUrlFactory("courses/<course_id>/questions")
@@ -64,6 +69,7 @@ public class OakApi {
                                            final Response.Listener<JSONObject> responseListener,
                                            final Response.ErrorListener errorListener,
                                            final Bundle data) {
+        Crashlytics.log(Log.DEBUG, TAG, "start load: getUnderstanding");
         return new JsonObjectRequest(
                 Request.Method.GET,
                 new OakUrlFactory("courses/<course_id>")
@@ -81,6 +87,7 @@ public class OakApi {
                                      final Response.Listener<JSONObject> responseListener,
                                      final Response.ErrorListener errorListener,
                                      final JSONObject requestData) {
+        Crashlytics.log(Log.DEBUG, TAG, "start load: postCourse: " + requestData.toString());
         return new JsonObjectRequest(
                 new OakUrlFactory("courses").url(),
                 requestData,
@@ -94,6 +101,7 @@ public class OakApi {
                                        final Response.ErrorListener errorListener,
                                        final Bundle data,
                                        final OakJSONObject requestData) {
+        Crashlytics.log(Log.DEBUG, TAG, "start load: postQuestion: " + requestData.toString());
         return new JsonObjectRequest(
                 new OakUrlFactory("courses/<course_id>/questions")
                         .add(COURSE_ID, data.getString(COURSE_ID))
@@ -111,6 +119,7 @@ public class OakApi {
                                            final Response.ErrorListener errorListener,
                                            final Bundle data,
                                            final OakJSONObject requestData) {
+        Crashlytics.log(Log.DEBUG, TAG, "start load: postQuestionVote: " + requestData.toString());
         return new JsonObjectRequest(
                 new OakUrlFactory("courses/<course_id>/questions/<question_id>")
                         .add(COURSE_ID, data.getString(COURSE_ID))
@@ -129,6 +138,7 @@ public class OakApi {
                                             final Response.ErrorListener errorListener,
                                             final Bundle data,
                                             final OakJSONObject requestData) {
+        Crashlytics.log(Log.DEBUG, TAG, "start load: postUnderstanding: " + requestData.toString());
         return new JsonObjectRequest(
                 new OakUrlFactory("courses/<course_id>")
                         .add(COURSE_ID, data.getString(COURSE_ID))
@@ -146,6 +156,7 @@ public class OakApi {
         return  new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Crashlytics.log(Log.DEBUG, TAG, "load error: " + error.networkResponse.statusCode);
                 AppMsgFactory.somethingWentWrong(activity);
                 if (errorListener != null) {
                     errorListener.onErrorResponse(error);
@@ -158,6 +169,7 @@ public class OakApi {
         return new Response.Listener<T>() {
             @Override
             public void onResponse(T response) {
+                Crashlytics.log(Log.DEBUG, TAG, "load success");
                 if (responseListener != null) {
                     responseListener.onResponse(response);
                 }
