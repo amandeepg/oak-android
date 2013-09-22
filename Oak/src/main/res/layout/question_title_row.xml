@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
-<TextView style="?android:attr/listSeparatorTextViewStyle"
-          android:id="@+id/title"
-          android:layout_width="0dp"
-          android:layout_weight="1"
-          android:gravity="center_vertical|start"
-          android:text="TITLE HERE"
-          tools:ignore="HardcodedText"/>
 
-<TextView style="?android:attr/listSeparatorTextViewStyle"
-          android:id="@+id/resolved_title"
-          android:layout_weight="1"
-          android:layout_width="0dp"
-          android:gravity="center_vertical|end"
-          android:text="@string/resolved_title"
-          android:paddingRight="8dp"
-    />
+    <TextView style="?android:attr/listSeparatorTextViewStyle"
+              android:id="@+id/title"
+              android:layout_width="wrap_content"
+              android:layout_alignParentStart="true"
+              android:layout_toLeftOf="@+id/resolved_title"
+              android:gravity="center_vertical|start"
+              android:text="TITLE HERE"
+              tools:ignore="HardcodedText"/>
 
-</LinearLayout>
+    <TextView style="?android:attr/listSeparatorTextViewStyle"
+              android:id="@+id/resolved_title"
+              android:layout_width="wrap_content"
+              android:layout_alignParentEnd="true"
+              android:gravity="center_vertical|end"
+              android:text="@string/resolved_title"
+              android:paddingRight="8dp"/>
+
+</RelativeLayout>
