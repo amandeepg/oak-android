@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ Version names follow semantic versioning (semvar.org). Version codes are the version name
+ with the dots removed and an extra 0 for non-dev and 1 for dev.
+ Examples:
+    1.2.3    -> 1230
+    1.4      -> 1400
+    1.6.4dev -> 1641
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.oak"
-          android:versionCode="1"
-          android:versionName="1.0">
+          android:versionCode="0101"
+          android:versionName="0.1dev">
 
     <uses-sdk
             android:minSdkVersion="4"
