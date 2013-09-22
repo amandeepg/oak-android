@@ -11,7 +11,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.oak"
           android:versionCode="0101"
-          android:versionName="0.1dev">
+          android:versionName="0.1-dev">
 
     <uses-sdk
             android:minSdkVersion="4"
