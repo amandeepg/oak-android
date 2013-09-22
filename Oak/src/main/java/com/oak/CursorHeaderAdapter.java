@@ -25,10 +25,19 @@ public abstract class CursorHeaderAdapter extends CursorAdapter {
     protected static final int TYPE_COUNT = 2;
 
     protected final LayoutInflater mInflater;
+    protected final int mHeaderLayourRes;
+    protected final int mHeaderId;
 
     public CursorHeaderAdapter(Context context, Cursor c, int flags) {
+        this(context, c, flags, android.R.layout.preference_category, android.R.id.title);
+    }
+
+    public CursorHeaderAdapter(Context context, Cursor c, int flags, int headerLayourRes,
+                               int headerId) {
         super(context, c, flags);
         mInflater = LayoutInflater.from(context);
+        mHeaderLayourRes = headerLayourRes;
+        mHeaderId = headerId;
     }
 
     @Override
@@ -77,7 +86,7 @@ public abstract class CursorHeaderAdapter extends CursorAdapter {
             linLay.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             linLay.setOrientation(LinearLayout.VERTICAL);
 
-            View headerView = mInflater.inflate(android.R.layout.preference_category, linLay, false);
+            View headerView = mInflater.inflate(mHeaderLayourRes, linLay, false);
             View itemView = newItemView(context, cursor, linLay);
 
             if (Build.VERSION.SDK_INT >= 11) {
@@ -108,8 +117,7 @@ public abstract class CursorHeaderAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         bindItemView(view, context, cursor);
 
-        // If there is a group header, set its value to just the date
-        TextView headerText = (TextView) view.findViewById(android.R.id.title);
+        TextView headerText = (TextView) view.findViewById(mHeaderId);
         if (headerText != null) {
             bindHeaderView(view, headerText, context, cursor);
         }

@@ -20,7 +20,7 @@ public class QuestionsAdapter extends CursorHeaderAdapter {
     private final QuestionListener questionListener;
 
     public QuestionsAdapter(Context context, Cursor c, int flags, QuestionListener ql) {
-        super(context, c, flags);
+        super(context, c, flags, R.layout.question_title_row, R.id.title);
         questionListener = ql;
     }
 
