@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -156,7 +157,9 @@ public class OakApi {
         return  new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Crashlytics.log(Log.DEBUG, TAG, "load error: " + error.networkResponse.statusCode);
+                NetworkResponse response = error.networkResponse;
+                String errSt = response != null ? String.valueOf(response.statusCode) : error.toString();
+                Crashlytics.log(Log.DEBUG, TAG, "load error: " + errSt);
                 AppMsgFactory.somethingWentWrong(activity);
                 if (errorListener != null) {
                     errorListener.onErrorResponse(error);
@@ -165,13 +168,14 @@ public class OakApi {
         };
     }
 
-    private static <T> Response.Listener<T> createResponseListener(final Response.Listener<T> responseListener) {
-        return new Response.Listener<T>() {
+    private static Response.Listener<JSONObject> createResponseListener(
+            final Response.Listener<JSONObject> responseListener) {
+        return new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(T response) {
-                Crashlytics.log(Log.DEBUG, TAG, "load success");
+            public void onResponse(JSONObject response) {
+                Crashlytics.log(Log.DEBUG, TAG, "load success: " + response.optString("status"));
                 if (responseListener != null) {
-                    responseListener.onResponse(response);
+                    responseListener.onResponse(response.optJSONObject("data"));
                 }
             }
         };
