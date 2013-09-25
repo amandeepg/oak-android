@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.michaelpardo.android.widget.chartview.ChartView;
 import com.michaelpardo.android.widget.chartview.LinearSeries;
 import com.oak.R.id;
@@ -107,7 +108,12 @@ public class UMeterFragment extends BaseFragment {
                         onUnderstandingLoaded(json);
                     }
                 },
-                null,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        postLoadDelayed(5 * OakConfig.AUTO_REFRESH_UNDERSTANDING_MILLIS);
+                    }
+                },
                 getCourseDataBundle()
         );
         addRequest(loadRequest);

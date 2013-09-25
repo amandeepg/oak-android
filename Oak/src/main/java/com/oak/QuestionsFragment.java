@@ -117,6 +117,7 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
             @Override
             public void onErrorResponse(VolleyError error) {
                 setRefreshComplete();
+                postLoadDelayed(2 * OakConfig.AUTO_REFRESH_QUESTIONS_MILLIS);
             }
         };
         Request loadRequest = OakApi.getQuestions(
@@ -189,6 +190,7 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
     private void onQuestionAdded(JSONObject json) {
         if (json.optInt("questionId") != 0) {
             AppMsgFactory.finishMsg(this, R.string.question_added);
+            postLoadDelayed(0);
         } else {
             AppMsgFactory.somethingWentWrong(getActivity());
         }
@@ -240,7 +242,12 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
                         createLoadRequest();
                     }
                 },
-                null,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkUtils.decrementFire(mResolveSemaphores, id);
+                    }
+                },
                 data,
                 jsonRequest
         );
@@ -289,7 +296,13 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
                         createLoadRequest();
                     }
                 },
-                null,
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkUtils.decrementFire(mVoteSemaphores, id);
+                    }
+                },
                 data,
                 jsonRequest
         );

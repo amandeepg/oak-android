@@ -146,10 +146,10 @@ public class CoursesFragment extends BaseFragment implements
     private void onCourseAdded(JSONObject json) {
         if (json.optInt("courseId") != 0) {
             AppMsgFactory.finishMsg(this, R.string.course_added);
+            postLoadDelayed(0);
         } else {
             AppMsgFactory.somethingWentWrong(getActivity());
         }
-        postLoadDelayed(0);
     }
 
     private void onCourseJoined(JSONObject json, Course course, String coursePass) {
