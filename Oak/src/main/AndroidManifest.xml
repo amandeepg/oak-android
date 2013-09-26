@@ -4,14 +4,14 @@
  Version names follow semantic versioning (semvar.org). Version codes are the version name
  with the dots removed and an extra 0 for non-dev and 1 for dev.
  Examples:
-    1.2.3    -> 1230
-    1.4      -> 1400
-    1.6.4dev -> 1641
+    1.2.3     -> 1230
+    1.4       -> 1400
+    1.6.4-dev -> 1641
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.oak"
-          android:versionCode="0110"
-          android:versionName="0.1.1">
+          android:versionCode="0111"
+          android:versionName="0.1.1-dev">
 
     <uses-sdk
             android:minSdkVersion="4"
