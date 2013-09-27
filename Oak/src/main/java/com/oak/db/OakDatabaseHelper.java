@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class OakDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "oak.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     public OakDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
