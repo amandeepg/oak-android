@@ -158,7 +158,7 @@ public class OakApi {
             @Override
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse response = error.networkResponse;
-                String errSt = response != null ? String.valueOf(response.statusCode) : error.toString();
+                String errSt = response != null ? new String(response.data) : error.toString();
                 Crashlytics.log(Log.DEBUG, TAG, "load error: " + errSt);
                 AppMsgFactory.somethingWentWrong(activity);
                 if (errorListener != null) {

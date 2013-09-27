@@ -296,7 +296,6 @@ public class QuestionsFragment extends BaseFragment implements LoaderManager.Loa
                         createLoadRequest();
                     }
                 },
-
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
