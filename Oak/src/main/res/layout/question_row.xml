@@ -35,19 +35,7 @@
             android:paddingBottom="0dp"
             android:textColor="#525252">
         </TextView>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:id="@+id/downButton"
-            android:background="@drawable/tri_down"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:id="@+id/downButtonSel"
-            android:background="@drawable/tri_sel_down"/>
     </LinearLayout>
-
 
     <LinearLayout android:orientation="vertical"
                   android:layout_width="0dp"

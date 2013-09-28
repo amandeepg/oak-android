@@ -38,13 +38,11 @@ public class QuestionsAdapter extends CursorHeaderAdapter {
         final Question q = new Question(cursor);
 
         final TextView countText = (TextView) view.findViewById(R.id.votesText);
-        TextView questionText = (TextView) view.findViewById(R.id.questionText);
-        TextView pointsText = (TextView) view.findViewById(R.id.pointsText);
+        final TextView questionText = (TextView) view.findViewById(R.id.questionText);
+        final TextView pointsText = (TextView) view.findViewById(R.id.pointsText);
         final CheckBox resolvedCheck = ((CheckBox) view.findViewById(R.id.resolvedCheckBox));
         final Button upButton = (Button) view.findViewById(R.id.upButton);
-        final Button downButton = (Button) view.findViewById(R.id.downButton);
         final Button upButtonSel = (Button) view.findViewById(R.id.upButtonSel);
-        final Button downButtonSel = (Button) view.findViewById(R.id.downButtonSel);
 
         resolvedCheck.setOnCheckedChangeListener(null);
 
@@ -59,45 +57,26 @@ public class QuestionsAdapter extends CursorHeaderAdapter {
             flipVisibility(upButton, upButtonSel);
         }
 
-        if (q.getDeviceVote().equals("-1")) {
-            flipVisibility(downButtonSel, downButton);
-        } else {
-            flipVisibility(downButton, downButtonSel);
-        }
-
+        final String id = q.getId();
         upButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questionListener.onVote("1", q.getId());
+                questionListener.onVote("1", id);
                 flipVisibility(upButtonSel, upButton);
-            }
-        });
-        downButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                questionListener.onVote("-1", q.getId());
-                flipVisibility(downButtonSel, downButton);
             }
         });
         upButtonSel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questionListener.onVote("0", q.getId());
+                questionListener.onVote("0", id);
                 flipVisibility(upButton, upButtonSel);
-            }
-        });
-        downButtonSel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                questionListener.onVote("0", q.getId());
-                flipVisibility(downButton, downButtonSel);
             }
         });
         resolvedCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                questionListener.onResolve(isChecked, q.getId());
+                questionListener.onResolve(isChecked, id);
             }
         });
     }

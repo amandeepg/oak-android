@@ -38,7 +38,7 @@ public abstract class AbstractSeries implements Parcelable {
         mPaint.setAntiAlias(true);
     }
 
-    private AbstractSeries(Parcel in) {
+    protected AbstractSeries(Parcel in) {
         this();
 
         in.readList(mPoints, null);
@@ -214,7 +214,7 @@ public abstract class AbstractSeries implements Parcelable {
     // PUBLIC CLASSES
     //////////////////////////////////////////////////////////////////////////////////////
 
-    public static abstract class AbstractPoint implements Comparable<AbstractPoint>,
+    public static class AbstractPoint implements Comparable<AbstractPoint>,
             Parcelable {
         private double mX;
         private double mY;
@@ -259,5 +259,16 @@ public abstract class AbstractSeries implements Parcelable {
             out.writeDouble(mX);
             out.writeDouble(mY);
         }
+
+        public static final Parcelable.Creator<AbstractPoint> CREATOR
+                = new Parcelable.Creator<AbstractPoint>() {
+            public AbstractPoint createFromParcel(Parcel in) {
+                return new AbstractPoint(in);
+            }
+
+            public AbstractPoint[] newArray(int size) {
+                return new AbstractPoint[size];
+            }
+        };
     }
 }
