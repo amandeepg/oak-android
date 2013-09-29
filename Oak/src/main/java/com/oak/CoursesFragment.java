@@ -33,6 +33,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.plus.PlusClient;
 import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.plus.model.people.PersonBuffer;
 import com.oak.db.CoursesContract;
 import com.oak.db.OakContentProvider;
 import com.oak.db.QuestionsContract;
@@ -44,7 +45,7 @@ import org.json.JSONObject;
 
 public class CoursesFragment extends BaseFragment implements
         LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener,
-        PlusClient.OnPersonLoadedListener {
+        PlusClient.OnPeopleLoadedListener {
 
     private CursorAdapter mAdapter;
     private View mView;
@@ -86,7 +87,7 @@ public class CoursesFragment extends BaseFragment implements
         super.onStart();
         setRefreshing(true);
         createLoadRequest();
-        AppController.getInstance().getPlusClient().loadPerson(this, "me");
+        AppController.getInstance().getPlusClient().loadPeople(this, "me");
     }
 
     @Override
@@ -324,7 +325,8 @@ public class CoursesFragment extends BaseFragment implements
     }
 
     @Override
-    public void onPersonLoaded(ConnectionResult connectionResult, Person person) {
+    public void onPeopleLoaded(ConnectionResult connectionResult, PersonBuffer persons, String s) {
+        Person person = persons.get(0);
         Crashlytics.log(Log.DEBUG, TAG, "me = " + person.getId() + ":" + person.getName());
     }
 }
