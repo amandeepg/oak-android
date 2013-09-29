@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Oak</string>
     <string name="add">Add</string>
     <string name="refresh">Refresh</string>
@@ -34,4 +36,9 @@
     <string name="course_code">Course Code</string>
     <string name="course_password">Course Password</string>
     <string name="resolved_title">Resolved?</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="signing_in">Signing in …</string>
+    <string name="revoke_account_access">Revoke Google+ Access</string>
+    <string name="sign_out">Sign out</string>
+
 </resources>

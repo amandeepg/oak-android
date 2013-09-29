@@ -18,4 +18,20 @@
         oak:showAsAction="ifRoom"
         android:visible="true">
     </item>
+
+    <item
+        android:id="@+id/sign_out"
+        android:title="@string/sign_out"
+        android:enabled="true"
+        android:showAsAction="never"
+        android:visible="true">
+    </item>
+
+    <item
+        android:id="@+id/revoke_account_access"
+        android:title="@string/revoke_account_access"
+        android:enabled="true"
+        android:showAsAction="never"
+        android:visible="true">
+    </item>
 </menu>

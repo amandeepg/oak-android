@@ -12,6 +12,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.plus.PlusClient;
 import com.oak.volley.OkHttpStack;
 
 public class AppController extends Application {
@@ -21,10 +22,8 @@ public class AppController extends Application {
      */
     public static final String DEFAULT_VOLLEY_TAG = "DefaultVolley";
 
-    /**
-     * Global request queue for Volley
-     */
     private RequestQueue mRequestQueue;
+    private PlusClient mPlusClient;
 
     /**
      * A singleton instance of the application class for easy access in other places
@@ -97,5 +96,13 @@ public class AppController extends Application {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
+    }
+
+    public PlusClient getPlusClient(){
+        return mPlusClient;
+    }
+
+    public void setPlusClient(PlusClient plusClient) {
+        this.mPlusClient = plusClient;
     }
 }

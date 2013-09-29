@@ -14,6 +14,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,10 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.plus.model.people.Person;
 import com.oak.db.CoursesContract;
 import com.oak.db.OakContentProvider;
 import com.oak.db.QuestionsContract;
@@ -38,7 +43,8 @@ import com.oak.utils.UiUtils;
 import org.json.JSONObject;
 
 public class CoursesFragment extends BaseFragment implements
-        LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
+        LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener,
+        PlusClient.OnPersonLoadedListener {
 
     private CursorAdapter mAdapter;
     private View mView;
@@ -80,6 +86,7 @@ public class CoursesFragment extends BaseFragment implements
         super.onStart();
         setRefreshing(true);
         createLoadRequest();
+        AppController.getInstance().getPlusClient().loadPerson(this, "me");
     }
 
     @Override
@@ -96,6 +103,8 @@ public class CoursesFragment extends BaseFragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        PlusClient plusClient = AppController.getInstance().getPlusClient();
+
         switch (item.getItemId()) {
             case R.id.add_course:
                 final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.add_course_dialog, null);
@@ -111,9 +120,34 @@ public class CoursesFragment extends BaseFragment implements
                         .setNegativeButton(R.string.cancel, null);
                 UiUtils.showDialogWithKeyboard(builder, dialogView);
                 return true;
+            case R.id.sign_out:
+                if (plusClient.isConnected()) {
+                    plusClient.clearDefaultAccount();
+                    plusClient.disconnect();
+                    plusClient.connect();
+                }
+                goBack();
+                return true;
+            case R.id.revoke_account_access:
+                if (plusClient.isConnected()) {
+                    plusClient.clearDefaultAccount();
+                    plusClient.revokeAccessAndDisconnect(new PlusClient.OnAccessRevokedListener() {
+                        @Override
+                        public void onAccessRevoked(ConnectionResult status) {
+                            goBack();
+                        }
+                    });
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void goBack() {
+        Intent intent = new Intent(getActivity(), SignInActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 
     private void createLoadRequest() {
@@ -163,9 +197,9 @@ public class CoursesFragment extends BaseFragment implements
         AppMsgFactory.finishMsg(getActivity());
         course.setPassword(coursePass);
         CoursesContract.update(course, getActivity().getContentResolver());
-        final Intent mIntent = new Intent(getActivity(), QMTabActivity.class);
-        mIntent.putExtra("course", course);
-        startActivity(mIntent);
+        final Intent intent = new Intent(getActivity(), QMTabActivity.class);
+        intent.putExtra("course", course);
+        startActivity(intent);
     }
 
     private void postLoadDelayed(final long delayMillis) {
@@ -287,5 +321,10 @@ public class CoursesFragment extends BaseFragment implements
     @Override
     public void onRefreshStarted(View view) {
         createLoadRequest();
+    }
+
+    @Override
+    public void onPersonLoaded(ConnectionResult connectionResult, Person person) {
+        Crashlytics.log(Log.DEBUG, TAG, "me = " + person.getId() + ":" + person.getName());
     }
 }

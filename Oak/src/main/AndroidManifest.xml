@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
  Version names follow semantic versioning (semvar.org). Version codes are the version name
  with the dots removed and an extra 0 for non-dev and 1 for dev.
@@ -8,41 +7,54 @@
     1.4       -> 1400
     1.6.4-dev -> 1641
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.oak"
-          android:versionCode="0121"
-          android:versionName="0.1.2-dev">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.oak"
+    android:versionCode="0121"
+    android:versionName="0.1.2-dev">
 
     <uses-sdk
-            android:minSdkVersion="4"
-            android:targetSdkVersion="18" />
+        android:minSdkVersion="4"
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-            android:name=".AppController"
-            android:label="@string/app_name"
-            android:icon="@drawable/ic_launcher"
-            android:theme="@style/AppTheme.Base">
+        android:name=".AppController"
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@style/AppTheme.Base">
         <activity
-                android:name="com.oak.CoursesActivity"
-                android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            android:name="com.oak.CoursesActivity"
+            android:label="@string/app_name" >
         </activity>
         <activity
-                android:name="com.oak.QMTabActivity"
-                android:label="@string/app_name" >
+            android:name="com.oak.QMTabActivity"
+            android:label="@string/app_name"
+            android:parentActivityName="com.oak.CoursesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.oak.CoursesActivity" />
+        </activity>
+        <activity
+            android:name="com.oak.SignInActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <provider
-                android:name=".db.OakContentProvider"
-                android:authorities="com.oak.courses.contentprovider"
-                android:exported="false">
+            android:name="com.oak.db.OakContentProvider"
+            android:authorities="com.oak.courses.contentprovider"
+            android:exported="false" >
         </provider>
-        <meta-data android:name="com.crashlytics.ApiKey" android:value="83f6e6b9b19521f64113f4df1b53506c57abc5de"/>
+
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="83f6e6b9b19521f64113f4df1b53506c57abc5de" />
     </application>
+
 </manifest>

@@ -31,4 +31,7 @@ proguard/
 
 .gradle/
 com_crashlytics_export_strings.xml
+*.keystore
+gradle.properties
 
+*~
