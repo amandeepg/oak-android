@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) 2013 Amandeep Grewal
+  -->
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.oak">
+
+    <application>
+        <provider
+            android:name="com.oak.db.OakContentProvider"
+            android:authorities="com.oak.debug.courses.contentprovider"
+            android:exported="false">
+        </provider>
+    </application>
+</manifest>

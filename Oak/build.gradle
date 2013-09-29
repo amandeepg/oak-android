@@ -28,8 +28,19 @@ android {
             keyAlias "oak devs"
         }
     }
+
+    final PROVIDER_DEBUG = "com.oak.debug.courses.contentprovider"
+    final PROVIDER_RELEASE = "com.oak.courses.contentprovider"
+
     buildTypes {
+
+        debug {
+            packageNameSuffix ".debug"
+            buildConfig "public static final String PROVIDER_AUTHORITY = \"" + PROVIDER_DEBUG + "\";"
+        }
+
         release {
+            buildConfig "public static final String PROVIDER_AUTHORITY = \"" + PROVIDER_RELEASE + "\";"
             signingConfig signingConfigs.release
         }
     }

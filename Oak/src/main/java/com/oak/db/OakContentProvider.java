@@ -14,6 +14,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
+import com.oak.BuildConfig;
+
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -28,7 +30,7 @@ public class OakContentProvider extends ContentProvider {
     private static final int QUESTIONS = 30;
     private static final int QUESTION_ID = 40;
 
-    private static final String AUTHORITY = "com.oak.courses.contentprovider";
+    private static final String AUTHORITY = BuildConfig.PROVIDER_AUTHORITY;
 
     private static final String COURSE_BASE_PATH = CoursesContract.TABLE_NAME;
     private static final String QUESTION_BASE_PATH = QuestionsContract.TABLE_NAME;

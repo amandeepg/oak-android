@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) 2013 Amandeep Grewal
+  -->
+
 <!--
  Version names follow semantic versioning (semvar.org). Version codes are the version name
  with the dots removed and an extra 0 for non-dev and 1 for dev.
@@ -45,12 +50,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <provider
-            android:name="com.oak.db.OakContentProvider"
-            android:authorities="com.oak.courses.contentprovider"
-            android:exported="false" >
-        </provider>
 
         <meta-data
             android:name="com.crashlytics.ApiKey"
