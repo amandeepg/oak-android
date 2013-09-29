@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2013 Amandeep Grewal
+ */
+
 package com.oak.utils;
 
 import org.json.JSONException;
