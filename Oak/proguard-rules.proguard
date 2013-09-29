@@ -1,0 +1,18 @@
+#Crsahlytics
+-keepattributes SourceFile,LineNumberTable
+
+#EventBus
+-keepclassmembers class ** {
+    public void onEvent*(**);
+}
+
+#Play Services
+-keep class * extends java.util.ListResourceBundle {
+    protected Object[][] getContents();
+}
+
+#Analytics
+-keep class com.google.android.gms.analytics.**
+-keep class com.google.analytics.tracking.**
+-dontwarn com.google.android.gms.analytics.**
+-dontwarn com.google.analytics.tracking.**

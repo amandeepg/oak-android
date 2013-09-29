@@ -20,6 +20,9 @@ android {
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 18
+
+        proguardFile getDefaultProguardFile('proguard-android-optimize.txt')
+        proguardFile 'proguard-rules.proguard'
     }
 
     signingConfigs {
@@ -37,11 +40,13 @@ android {
         debug {
             packageNameSuffix ".debug"
             buildConfig "public static final String PROVIDER_AUTHORITY = \"" + PROVIDER_DEBUG + "\";"
+            runProguard true
         }
 
         release {
             buildConfig "public static final String PROVIDER_AUTHORITY = \"" + PROVIDER_RELEASE + "\";"
             signingConfig signingConfigs.release
+            runProguard true
         }
     }
 
